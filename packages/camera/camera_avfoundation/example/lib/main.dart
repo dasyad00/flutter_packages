@@ -68,7 +68,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   double _maxAvailableZoom = 1.0;
   double _currentScale = 1.0;
   double _baseScale = 1.0;
-
+  double _minExposureDuration = 0.0;
+  double _maxExposureDuration = 0.0;
+  double _minExposureISO = 0.0;
+  double _maxExposureISO = 0.0;
   // Counting pointers (number of user fingers on screen)
   int _pointers = 0;
 
@@ -674,6 +677,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         CameraPlatform.instance
             .getMinZoomLevel(cameraController.cameraId)
             .then((double value) => _minAvailableZoom = value),
+        CameraPlatform.instance
+            .getMinExposureDuration(cameraController.cameraId)
+            .then((double value) => _minExposureDuration = value),
+        CameraPlatform.instance
+            .getMaxExposureDuration(cameraController.cameraId)
+            .then((double value) => _maxExposureDuration = value),
+        CameraPlatform.instance
+            .getMinExposureISO(cameraController.cameraId)
+            .then((double value) => _minExposureISO = value),
+        CameraPlatform.instance
+            .getMaxExposureISO(cameraController.cameraId)
+            .then((double value) => _maxExposureISO = value),
       ]);
     } on CameraException catch (e) {
       switch (e.code) {

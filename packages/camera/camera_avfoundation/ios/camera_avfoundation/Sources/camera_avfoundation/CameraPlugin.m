@@ -372,6 +372,36 @@ static FlutterError *FlutterErrorFromNSError(NSError *error) {
   });
 }
 
+- (void)getMinExposureISO:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    completion(@(weakSelf.camera.captureDevice.activeFormat.minISO), nil);
+  });
+}
+
+- (void)getMaxExposureISO:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    completion(@(weakSelf.camera.captureDevice.activeFormat.maxISO), nil);
+  });
+}
+
+-(void)getMinExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    CMTime minExposureDuration = weakSelf.camera.captureDevice.activeFormat.minExposureDuration;
+    completion(@(CMTimeGetSeconds(minExposureDuration)), nil);
+  });
+}
+
+-(void)getMaxExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    CMTime minExposureDuration = weakSelf.camera.captureDevice.activeFormat.maxExposureDuration;
+    completion(@(CMTimeGetSeconds(minExposureDuration)), nil);
+  });
+}
+
 - (void)setFocusMode:(FCPPlatformFocusMode)mode
           completion:(nonnull void (^)(FlutterError *_Nullable))completion {
   __weak typeof(self) weakSelf = self;

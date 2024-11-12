@@ -262,6 +262,26 @@ abstract class CameraApi {
   @ObjCSelector('setExposureOffset:')
   void setExposureOffset(double offset);
 
+  /// Returns the minimum exposure duration supported by the camera in seconds.
+  @async
+  @ObjCSelector('getMinExposureDuration')
+  double getMinExposureDuration();
+
+  /// Returns the maximum exposure duration supported by the camera in seconds.
+  @async
+  @ObjCSelector('getMaxExposureDuration')
+  double getMaxExposureDuration();
+
+  /// Returns the minimum exposure ISO supported by the camera.
+  @async
+  @ObjCSelector('getMinExposureISO')
+  double getMinExposureISO();
+
+  /// Returns the maximum exposure ISO supported by the camera.
+  @async
+  @ObjCSelector('getMaxExposureISO')
+  double getMaxExposureISO();
+
   /// Switches the camera to the given focus mode.
   @async
   @ObjCSelector('setFocusMode:')

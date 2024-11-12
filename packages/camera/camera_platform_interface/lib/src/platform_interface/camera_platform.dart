@@ -243,6 +243,26 @@ abstract class CameraPlatform extends PlatformInterface {
     throw UnimplementedError('setExposureOffset() is not implemented.');
   }
 
+  /// Gets the minimum supported exposure duration for the selected camera in seconds.
+  Future<double> getMinExposureDuration(int cameraId) {
+    throw UnimplementedError('getMinExposureDuration() is not implemented.');
+  }
+
+  /// Gets the maximum supported exposure duration for the selected camera in seconds.
+  Future<double> getMaxExposureDuration(int cameraId) {
+    throw UnimplementedError('getMaxExposureDuration() is not implemented.');
+  }
+
+  /// Gets the minimum supported exposure ISO for the selected camera.
+  Future<double> getMinExposureISO(int cameraId) {
+    throw UnimplementedError('getMinExposureISO() is not implemented.');
+  }
+
+  /// Gets the maximum supported exposure ISO for the selected camera.
+  Future<double> getMaxExposureISO(int cameraId) {
+    throw UnimplementedError('getMaxExposureISO() is not implemented.');
+  }
+
   /// Sets the focus mode for taking pictures.
   Future<void> setFocusMode(int cameraId, FocusMode mode) {
     throw UnimplementedError('setFocusMode() is not implemented.');

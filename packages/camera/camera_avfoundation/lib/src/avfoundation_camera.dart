@@ -305,6 +305,26 @@ class AVFoundationCamera extends CameraPlatform {
   }
 
   @override
+  Future<double> getMinExposureDuration(int cameraId) {
+    return _hostApi.getMinExposureDuration();
+  }
+
+  @override
+  Future<double> getMaxExposureDuration(int cameraId) {
+    return _hostApi.getMaxExposureDuration();
+  }
+
+  @override
+  Future<double> getMinExposureISO(int cameraId) {
+    return _hostApi.getMinExposureISO();
+  }
+
+  @override
+  Future<double> getMaxExposureISO(int cameraId) {
+    return _hostApi.getMaxExposureISO();
+  }
+
+  @override
   Future<void> setExposurePoint(int cameraId, Point<double>? point) async {
     assert(point == null || point.x >= 0 && point.x <= 1);
     assert(point == null || point.y >= 0 && point.y <= 1);
