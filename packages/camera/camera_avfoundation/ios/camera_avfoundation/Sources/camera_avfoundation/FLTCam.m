@@ -1176,6 +1176,16 @@ static void selectBestFormatForRequestedFrameRate(
   [_captureDevice unlockForConfiguration];
 }
 
+- (void)setExposureManualWithDuration:(double)duration ISO:(float)iso{
+    CMTime durationTime = (duration > 0) ? CMTimeMake(duration, 1000000000) : AVCaptureExposureDurationCurrent;
+    iso = (iso > 0) ? iso : AVCaptureISOCurrent;
+  [_captureDevice lockForConfiguration:nil];
+  [_captureDevice setExposureModeCustomWithDuration:durationTime
+                                                ISO:iso
+                                  completionHandler:nil];
+  [_captureDevice unlockForConfiguration];
+}
+
 - (void)startImageStreamWithMessenger:(NSObject<FlutterBinaryMessenger> *)messenger {
   [self startImageStreamWithMessenger:messenger
                    imageStreamHandler:[[FLTImageStreamHandler alloc]

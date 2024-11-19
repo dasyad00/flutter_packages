@@ -99,6 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
        withCompletion:(void (^)(FlutterError *_Nullable))completion
     NS_SWIFT_NAME(setFocusPoint(_:completion:));
 - (void)setExposureOffset:(double)offset;
+- (void)setExposureManualWithDuration:(double)duration ISO:(float)iso;
 - (void)startImageStreamWithMessenger:(NSObject<FlutterBinaryMessenger> *)messenger;
 - (void)stopImageStream;
 - (void)setZoomLevel:(CGFloat)zoom withCompletion:(void (^)(FlutterError *_Nullable))completion;

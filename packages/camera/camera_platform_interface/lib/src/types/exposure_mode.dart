@@ -7,6 +7,9 @@ enum ExposureMode {
   /// Automatically determine exposure settings.
   auto,
 
+  /// Manually determine exposure settings.
+  manual,
+
   /// Lock the currently determined exposure settings.
   locked,
 }
@@ -16,6 +19,8 @@ String serializeExposureMode(ExposureMode exposureMode) {
   switch (exposureMode) {
     case ExposureMode.locked:
       return 'locked';
+    case ExposureMode.manual:
+      return 'manual';
     case ExposureMode.auto:
       return 'auto';
   }
@@ -26,6 +31,8 @@ ExposureMode deserializeExposureMode(String str) {
   switch (str) {
     case 'locked':
       return ExposureMode.locked;
+    case 'manual':
+      return ExposureMode.manual;
     case 'auto':
       return ExposureMode.auto;
     default:

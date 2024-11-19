@@ -70,6 +70,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   double _baseScale = 1.0;
   double _minExposureDuration = 0.0;
   double _maxExposureDuration = 0.0;
+  double _currentExposureDuration = 0.0;
   double _minExposureISO = 0.0;
   double _maxExposureISO = 0.0;
   // Counting pointers (number of user fingers on screen)
@@ -375,6 +376,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           ? Colors.orange
           : Colors.blue,
     );
+    final ButtonStyle styleManual = TextButton.styleFrom(
+      foregroundColor: controller?.value.exposureMode == ExposureMode.manual
+          ? Colors.orange
+          : Colors.blue,
+    );
     final ButtonStyle styleLocked = TextButton.styleFrom(
       foregroundColor: controller?.value.exposureMode == ExposureMode.locked
           ? Colors.orange
@@ -408,6 +414,21 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                       }
                     },
                     child: const Text('AUTO'),
+                  ),
+                  TextButton(
+                    style: styleManual,
+                    onPressed: controller != null
+                        ? () =>
+                            onSetExposureModeButtonPressed(ExposureMode.manual)
+                        : null,
+                    onLongPress: () {
+                      if (controller != null) {
+                        CameraPlatform.instance
+                            .setExposurePoint(controller!.cameraId, null);
+                        showInSnackBar('Resetting exposure point');
+                      }
+                    },
+                    child: const Text('MANUAL'),
                   ),
                   TextButton(
                     style: styleLocked,
@@ -444,6 +465,25 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         : setExposureOffset,
                   ),
                   Text(_maxAvailableExposureOffset.toString()),
+                ],
+              ),
+              const Center(
+                child: Text('Exposure Duration'),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(_minExposureDuration.toString()),
+                  Slider(
+                    value: _currentExposureDuration,
+                    min: _minExposureDuration,
+                    max: _maxExposureDuration,
+                    label: _currentExposureDuration.toString(),
+                    onChanged: _minExposureDuration == _maxExposureDuration
+                        ? null
+                        : setExposureDuration,
+                  ),
+                  Text(_maxExposureDuration.toString()),
                 ],
               ),
             ],
@@ -684,12 +724,17 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             .getMaxExposureDuration(cameraController.cameraId)
             .then((double value) => _maxExposureDuration = value),
         CameraPlatform.instance
+            .getCurrentExposureDuration(cameraController.cameraId)
+            .then((double value) => _currentExposureDuration = value),
+        CameraPlatform.instance
             .getMinExposureISO(cameraController.cameraId)
             .then((double value) => _minExposureISO = value),
         CameraPlatform.instance
             .getMaxExposureISO(cameraController.cameraId)
             .then((double value) => _maxExposureISO = value),
       ]);
+      print("_minExposureDuration=$_minExposureDuration");
+      print("_maxExposureDuration=$_maxExposureDuration");
     } on CameraException catch (e) {
       switch (e.code) {
         case 'CameraAccessDenied':
@@ -978,6 +1023,22 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     });
     try {
       offset = await controller!.setExposureOffset(offset);
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      rethrow;
+    }
+  }
+
+  Future<void> setExposureDuration(double duration) async {
+    if (controller == null) {
+      return;
+    }
+
+    setState(() {
+      _currentExposureDuration = duration;
+    });
+    try {
+      await controller!.setExposureManual(duration, -1);
     } on CameraException catch (e) {
       _showCameraException(e);
       rethrow;

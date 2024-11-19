@@ -305,6 +305,11 @@ class AVFoundationCamera extends CameraPlatform {
   }
 
   @override
+  Future<void> setExposureManual(double duration, double iso) async {
+    return _hostApi.setExposureManual(duration, iso);
+  }
+
+  @override
   Future<double> getMinExposureDuration(int cameraId) {
     return _hostApi.getMinExposureDuration();
   }
@@ -312,6 +317,11 @@ class AVFoundationCamera extends CameraPlatform {
   @override
   Future<double> getMaxExposureDuration(int cameraId) {
     return _hostApi.getMaxExposureDuration();
+  }
+
+  @override
+  Future<double> getCurrentExposureDuration(int cameraId) {
+    return _hostApi.getCurrentExposureDuration();
   }
 
   @override
@@ -437,6 +447,8 @@ class AVFoundationCamera extends CameraPlatform {
     switch (mode) {
       case ExposureMode.locked:
         return PlatformExposureMode.locked;
+      case ExposureMode.manual:
+        return PlatformExposureMode.manual;
       case ExposureMode.auto:
         return PlatformExposureMode.auto;
     }

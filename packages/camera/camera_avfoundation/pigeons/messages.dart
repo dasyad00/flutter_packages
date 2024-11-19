@@ -40,6 +40,7 @@ enum PlatformDeviceOrientation {
 // Pigeon version of ExposureMode.
 enum PlatformExposureMode {
   auto,
+  manual,
   locked,
 }
 
@@ -262,6 +263,11 @@ abstract class CameraApi {
   @ObjCSelector('setExposureOffset:')
   void setExposureOffset(double offset);
 
+  /// Sets the exposure manually to the given value.
+  @async
+  @ObjCSelector('setExposureManualWithDuration:withISO:')
+  void setExposureManual(double duration, double iso);
+
   /// Returns the minimum exposure duration supported by the camera in seconds.
   @async
   @ObjCSelector('getMinExposureDuration')
@@ -271,6 +277,10 @@ abstract class CameraApi {
   @async
   @ObjCSelector('getMaxExposureDuration')
   double getMaxExposureDuration();
+
+  @async
+  @ObjCSelector('getCurrentExposureDuration')
+  double getCurrentExposureDuration();
 
   /// Returns the minimum exposure ISO supported by the camera.
   @async

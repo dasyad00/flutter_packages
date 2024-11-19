@@ -991,6 +991,35 @@ void SetUpFCPCameraApiWithSuffix(id<FlutterBinaryMessenger> binaryMessenger,
       [channel setMessageHandler:nil];
     }
   }
+  /// Sets the exposure manually to the given value.
+  {
+    FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
+           initWithName:[NSString stringWithFormat:@"%@%@",
+                                                   @"dev.flutter.pigeon.camera_avfoundation."
+                                                   @"CameraApi.setExposureManual",
+                                                   messageChannelSuffix]
+        binaryMessenger:binaryMessenger
+                  codec:FCPGetMessagesCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(setExposureManualWithDuration:
+                                                                        withISO:completion:)],
+                @"FCPCameraApi api (%@) doesn't respond to "
+                @"@selector(setExposureManualWithDuration:withISO:completion:)",
+                api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray<id> *args = message;
+        double arg_duration = [GetNullableObjectAtIndex(args, 0) doubleValue];
+        double arg_iso = [GetNullableObjectAtIndex(args, 1) doubleValue];
+        [api setExposureManualWithDuration:arg_duration
+                                   withISO:arg_iso
+                                completion:^(FlutterError *_Nullable error) {
+                                  callback(wrapResult(nil, error));
+                                }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
   /// Returns the minimum exposure duration supported by the camera in seconds.
   {
     FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
@@ -1028,6 +1057,28 @@ void SetUpFCPCameraApiWithSuffix(id<FlutterBinaryMessenger> binaryMessenger,
                 api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         [api getMaxExposureDuration:^(NSNumber *_Nullable output, FlutterError *_Nullable error) {
+          callback(wrapResult(output, error));
+        }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel = [[FlutterBasicMessageChannel alloc]
+           initWithName:[NSString stringWithFormat:@"%@%@",
+                                                   @"dev.flutter.pigeon.camera_avfoundation."
+                                                   @"CameraApi.getCurrentExposureDuration",
+                                                   messageChannelSuffix]
+        binaryMessenger:binaryMessenger
+                  codec:FCPGetMessagesCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(getCurrentExposureDuration:)],
+                @"FCPCameraApi api (%@) doesn't respond to @selector(getCurrentExposureDuration:)",
+                api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        [api getCurrentExposureDuration:^(NSNumber *_Nullable output,
+                                          FlutterError *_Nullable error) {
           callback(wrapResult(output, error));
         }];
       }];

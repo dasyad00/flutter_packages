@@ -49,6 +49,7 @@ enum PlatformDeviceOrientation {
 
 enum PlatformExposureMode {
   auto,
+  manual,
   locked,
 }
 
@@ -927,6 +928,31 @@ class CameraApi {
     }
   }
 
+  /// Sets the exposure manually to the given value.
+  Future<void> setExposureManual(double duration, double iso) async {
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.camera_avfoundation.CameraApi.setExposureManual$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList = await pigeonVar_channel
+        .send(<Object?>[duration, iso]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
   /// Returns the minimum exposure duration supported by the camera in seconds.
   Future<double> getMinExposureDuration() async {
     final String pigeonVar_channelName =
@@ -961,6 +987,35 @@ class CameraApi {
   Future<double> getMaxExposureDuration() async {
     final String pigeonVar_channelName =
         'dev.flutter.pigeon.camera_avfoundation.CameraApi.getMaxExposureDuration$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_channel.send(null) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as double?)!;
+    }
+  }
+
+  Future<double> getCurrentExposureDuration() async {
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.camera_avfoundation.CameraApi.getCurrentExposureDuration$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel =
         BasicMessageChannel<Object?>(
       pigeonVar_channelName,

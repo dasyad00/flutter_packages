@@ -43,7 +43,8 @@ typedef NS_ENUM(NSUInteger, FCPPlatformDeviceOrientation) {
 
 typedef NS_ENUM(NSUInteger, FCPPlatformExposureMode) {
   FCPPlatformExposureModeAuto = 0,
-  FCPPlatformExposureModeLocked = 1,
+  FCPPlatformExposureModeManual = 1,
+  FCPPlatformExposureModeLocked = 2,
 };
 
 /// Wrapper for FCPPlatformExposureMode to allow for nullability.
@@ -249,10 +250,16 @@ NSObject<FlutterMessageCodec> *FCPGetMessagesCodec(void);
 - (void)getMaximumExposureOffset:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 /// Sets the exposure offset manually to the given value.
 - (void)setExposureOffset:(double)offset completion:(void (^)(FlutterError *_Nullable))completion;
+/// Sets the exposure manually to the given value.
+- (void)setExposureManualWithDuration:(double)duration
+                              withISO:(double)iso
+                           completion:(void (^)(FlutterError *_Nullable))completion;
 /// Returns the minimum exposure duration supported by the camera in seconds.
 - (void)getMinExposureDuration:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 /// Returns the maximum exposure duration supported by the camera in seconds.
 - (void)getMaxExposureDuration:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
+- (void)getCurrentExposureDuration:(void (^)(NSNumber *_Nullable,
+                                             FlutterError *_Nullable))completion;
 /// Returns the minimum exposure ISO supported by the camera.
 - (void)getMinExposureISO:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 /// Returns the maximum exposure ISO supported by the camera.

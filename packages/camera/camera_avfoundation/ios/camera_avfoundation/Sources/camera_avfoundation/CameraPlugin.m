@@ -33,6 +33,8 @@ static FlutterError *FlutterErrorFromNSError(NSError *error) {
 @property(readonly, nonatomic) NSObject<FLTCaptureDeviceInputFactory> *captureDeviceInputFactory;
 @end
 
+static Float64 exposureDurationScale = 1000000000;
+
 @implementation CameraPlugin
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
@@ -372,6 +374,14 @@ static FlutterError *FlutterErrorFromNSError(NSError *error) {
   });
 }
 
+- (void)setExposureManualWithDuration:(double)duration withISO:(double)iso completion:(void (^)(FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    [weakSelf.camera setExposureManualWithDuration:duration ISO:iso];
+    completion(nil);
+  });
+}
+
 - (void)getMinExposureISO:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
@@ -389,16 +399,24 @@ static FlutterError *FlutterErrorFromNSError(NSError *error) {
 -(void)getMinExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
-    CMTime minExposureDuration = weakSelf.camera.captureDevice.activeFormat.minExposureDuration;
-    completion(@(CMTimeGetSeconds(minExposureDuration)), nil);
+    Float64 minExposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.activeFormat.minExposureDuration);
+    completion(@(exposureDurationScale * minExposureDuration), nil);
   });
 }
 
 -(void)getMaxExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
-    CMTime minExposureDuration = weakSelf.camera.captureDevice.activeFormat.maxExposureDuration;
-    completion(@(CMTimeGetSeconds(minExposureDuration)), nil);
+    Float64 maxExposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.activeFormat.maxExposureDuration);
+    completion(@(exposureDurationScale * maxExposureDuration), nil);
+  });
+}
+
+-(void)getCurrentExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    Float64 exposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.exposureDuration);
+    completion(@(exposureDurationScale * exposureDuration), nil);
   });
 }
 

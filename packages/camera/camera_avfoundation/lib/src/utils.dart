@@ -64,6 +64,7 @@ DeviceOrientation deviceOrientationFromPlatform(
 ExposureMode exposureModeFromPlatform(PlatformExposureMode mode) {
   return switch (mode) {
     PlatformExposureMode.auto => ExposureMode.auto,
+    PlatformExposureMode.manual => ExposureMode.manual,
     PlatformExposureMode.locked => ExposureMode.locked,
   };
 }
