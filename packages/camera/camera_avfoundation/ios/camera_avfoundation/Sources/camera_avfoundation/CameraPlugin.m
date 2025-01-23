@@ -396,6 +396,13 @@ static Float64 exposureDurationScale = 1000000000;
   });
 }
 
+-(void)getCurrentExposureISO:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.captureSessionQueue, ^{
+    completion(@(weakSelf.camera.captureDevice.ISO), nil);
+  });
+}
+
 -(void)getMinExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{

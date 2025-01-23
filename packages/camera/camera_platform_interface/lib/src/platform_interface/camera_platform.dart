@@ -272,6 +272,10 @@ abstract class CameraPlatform extends PlatformInterface {
     throw UnimplementedError('getMaxExposureISO() is not implemented.');
   }
 
+  Future<double> getCurrentExposureISO(int cameraId) {
+    throw UnimplementedError('getCurrentExposureISO() is not implemented.');
+  }
+
   /// Sets the focus mode for taking pictures.
   Future<void> setFocusMode(int cameraId, FocusMode mode) {
     throw UnimplementedError('setFocusMode() is not implemented.');

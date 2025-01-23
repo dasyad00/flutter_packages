@@ -264,6 +264,7 @@ NSObject<FlutterMessageCodec> *FCPGetMessagesCodec(void);
 - (void)getMinExposureISO:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 /// Returns the maximum exposure ISO supported by the camera.
 - (void)getMaxExposureISO:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
+- (void)getCurrentExposureISO:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 /// Switches the camera to the given focus mode.
 - (void)setFocusMode:(FCPPlatformFocusMode)mode
           completion:(void (^)(FlutterError *_Nullable))completion;

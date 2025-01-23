@@ -292,6 +292,10 @@ abstract class CameraApi {
   @ObjCSelector('getMaxExposureISO')
   double getMaxExposureISO();
 
+  @async
+  @ObjCSelector('getCurrentExposureISO')
+  double getCurrentExposureISO();
+
   /// Switches the camera to the given focus mode.
   @async
   @ObjCSelector('setFocusMode:')

@@ -69,7 +69,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   double _currentScale = 1.0;
   double _baseScale = 1.0;
   double _minExposureDuration = 0.0;
-  double _maxExposureDuration = 0.0;
+  // double _maxExposureDuration = 1000000000.0;
+  double _maxExposureDuration = 50000000.0;
   double _currentExposureDuration = 0.0;
   double _minExposureISO = 0.0;
   double _maxExposureISO = 0.0;
@@ -447,45 +448,56 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                   ),
                 ],
               ),
-              const Center(
-                child: Text('Exposure Offset'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text(_minAvailableExposureOffset.toString()),
-                  Slider(
-                    value: _currentExposureOffset,
-                    min: _minAvailableExposureOffset,
-                    max: _maxAvailableExposureOffset,
-                    label: _currentExposureOffset.toString(),
-                    onChanged: _minAvailableExposureOffset ==
-                            _maxAvailableExposureOffset
-                        ? null
-                        : setExposureOffset,
-                  ),
-                  Text(_maxAvailableExposureOffset.toString()),
-                ],
-              ),
-              const Center(
-                child: Text('Exposure Duration'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text(_minExposureDuration.toString()),
-                  Slider(
-                    value: _currentExposureDuration,
-                    min: _minExposureDuration,
-                    max: _maxExposureDuration,
-                    label: _currentExposureDuration.toString(),
-                    onChanged: _minExposureDuration == _maxExposureDuration
-                        ? null
-                        : setExposureDuration,
-                  ),
-                  Text(_maxExposureDuration.toString()),
-                ],
-              ),
+              if (controller?.value.exposureMode == ExposureMode.locked)
+                Column(
+                  children: [
+                    const Center(
+                      child: Text('Exposure Offset'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(_minAvailableExposureOffset.toString()),
+                        Slider(
+                          value: _currentExposureOffset,
+                          min: _minAvailableExposureOffset,
+                          max: _maxAvailableExposureOffset,
+                          label: _currentExposureOffset.toString(),
+                          onChanged: _minAvailableExposureOffset ==
+                                  _maxAvailableExposureOffset
+                              ? null
+                              : setExposureOffset,
+                        ),
+                        Text(_maxAvailableExposureOffset.toString()),
+                      ],
+                    ),
+                  ],
+                ),
+              if (controller?.value.exposureMode == ExposureMode.manual)
+                Column(
+                  children: [
+                    const Center(
+                      child: Text('Exposure Duration'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(_minExposureDuration.toString()),
+                        Slider(
+                          value: _currentExposureDuration,
+                          min: _minExposureDuration,
+                          max: _maxExposureDuration,
+                          label: _currentExposureDuration.toString(),
+                          onChanged:
+                              _minExposureDuration == _maxExposureDuration
+                                  ? null
+                                  : setExposureDuration,
+                        ),
+                        Text(_maxExposureDuration.toString()),
+                      ],
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -720,9 +732,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         CameraPlatform.instance
             .getMinExposureDuration(cameraController.cameraId)
             .then((double value) => _minExposureDuration = value),
-        CameraPlatform.instance
-            .getMaxExposureDuration(cameraController.cameraId)
-            .then((double value) => _maxExposureDuration = value),
+        // CameraPlatform.instance
+        //     .getMaxExposureDuration(cameraController.cameraId)
+        //     .then((double value) => _maxExposureDuration = value),
         CameraPlatform.instance
             .getCurrentExposureDuration(cameraController.cameraId)
             .then((double value) => _currentExposureDuration = value),
@@ -733,8 +745,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             .getMaxExposureISO(cameraController.cameraId)
             .then((double value) => _maxExposureISO = value),
       ]);
-      print("_minExposureDuration=$_minExposureDuration");
-      print("_maxExposureDuration=$_maxExposureDuration");
+      print("_minExposureDuration    =$_minExposureDuration");
+      print("_maxExposureDuration    =$_maxExposureDuration");
+      print("_currentExposureDuration=$_currentExposureDuration");
     } on CameraException catch (e) {
       switch (e.code) {
         case 'CameraAccessDenied':
@@ -1034,6 +1047,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       return;
     }
 
+    print("setExposureDuration($duration)");
     setState(() {
       _currentExposureDuration = duration;
     });
