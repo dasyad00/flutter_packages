@@ -18,6 +18,8 @@
 #import "./include/camera_avfoundation/QueueUtils.h"
 #import "./include/camera_avfoundation/messages.g.h"
 
+static void *exposureTargetOffsetContext = &exposureTargetOffsetContext;
+
 static FlutterError *FlutterErrorFromNSError(NSError *error) {
   return [FlutterError errorWithCode:[NSString stringWithFormat:@"Error %d", (int)error.code]
                              message:error.localizedDescription
@@ -124,6 +126,49 @@ static FlutterError *FlutterErrorFromNSError(NSError *error) {
 @implementation FLTCam
 
 NSString *const errorMethod = @"error";
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+  if (context == exposureTargetOffsetContext) {
+    float newExposureTargetOffset = [change[NSKeyValueChangeNewKey] floatValue];
+
+    if (!self.captureDevice) return;
+
+    CGFloat currentISO = self.captureDevice.ISO;
+    CGFloat biasISO = 0;
+
+    // Assume 0,3 as our limit to correct the ISO
+    if (newExposureTargetOffset > 0.3f)  // decrease ISO
+      biasISO = -50;
+    else if (newExposureTargetOffset < -0.3f)  // increase ISO
+      biasISO = 50;
+
+    if (biasISO) {
+      // Normalize ISO level for the current device
+      CGFloat newISO = currentISO + biasISO;
+      newISO = newISO > self.captureDevice.activeFormat.maxISO
+                   ? self.captureDevice.activeFormat.maxISO
+                   : newISO;
+      newISO = newISO < self.captureDevice.activeFormat.minISO
+                   ? self.captureDevice.activeFormat.minISO
+                   : newISO;
+
+      NSLog(@"New ISO=%f", newISO);
+      NSError *error = nil;
+      if ([self.captureDevice lockForConfiguration:&error]) {
+        [self.captureDevice setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent
+                                                          ISO:newISO
+                                            completionHandler:^(CMTime syncTime){
+                                            }];
+        [self.captureDevice unlockForConfiguration];
+      }
+    }
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
+}
 
 // Returns frame rate supported by format closest to targetFrameRate.
 static double bestFrameRateForFormat(NSObject<FLTCaptureDeviceFormat> *format,
@@ -277,6 +322,10 @@ static void selectBestFormatForRequestedFrameRate(
   }
 
   [self updateOrientation];
+  [self addObserver:self
+         forKeyPath:@"captureDevice.exposureTargetOffset"
+            options:NSKeyValueObservingOptionNew
+            context:exposureTargetOffsetContext];
 
   return self;
 }
