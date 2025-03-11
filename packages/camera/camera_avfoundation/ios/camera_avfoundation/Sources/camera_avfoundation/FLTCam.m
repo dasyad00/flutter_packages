@@ -133,18 +133,25 @@ NSString *const errorMethod = @"error";
                        context:(void *)context {
   if (context == exposureTargetOffsetContext) {
     float newExposureTargetOffset = [change[NSKeyValueChangeNewKey] floatValue];
+    float absExposureTargetOffset = fabsf(newExposureTargetOffset);
 
     if (!self.captureDevice) return;
 
     CGFloat currentISO = self.captureDevice.ISO;
     CGFloat biasISO = 0;
+    CGFloat limit = 0.05;
+    CGFloat isoChangeStep = currentISO * absExposureTargetOffset;
 
-    // Assume 0,3 as our limit to correct the ISO
-    if (newExposureTargetOffset > 0.3f)  // decrease ISO
-      biasISO = -50;
-    else if (newExposureTargetOffset < -0.3f)  // increase ISO
-      biasISO = 50;
-
+    if (newExposureTargetOffset > limit) {
+      // decrease ISO
+      biasISO -= isoChangeStep;
+    } else if (newExposureTargetOffset < -limit) {
+      // increase ISO
+      biasISO += isoChangeStep;
+    } else {
+      return;
+    }
+      
     if (biasISO) {
       // Normalize ISO level for the current device
       CGFloat newISO = currentISO + biasISO;
@@ -155,7 +162,7 @@ NSString *const errorMethod = @"error";
                    ? self.captureDevice.activeFormat.minISO
                    : newISO;
 
-      NSLog(@"New ISO=%f", newISO);
+      NSLog(@"exposureTargetOffset=%f, ISO=%f", newExposureTargetOffset, newISO);
       NSError *error = nil;
       if ([self.captureDevice lockForConfiguration:&error]) {
         [self.captureDevice setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent
