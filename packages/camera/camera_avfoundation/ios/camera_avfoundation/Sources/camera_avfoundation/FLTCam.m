@@ -133,7 +133,7 @@ NSString *const errorMethod = @"error";
                        context:(void *)context {
   if (context == exposureTargetOffsetContext) {
     float newExposureTargetOffset = [change[NSKeyValueChangeNewKey] floatValue];
-    float absExposureTargetOffset = fabsf(newExposureTargetOffset);
+    float absExposureTargetOffset = MIN(fabsf(newExposureTargetOffset), 2.0);
 
     if (!self.captureDevice) return;
 
