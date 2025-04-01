@@ -133,7 +133,7 @@ NSString *const errorMethod = @"error";
                        context:(void *)context {
   if (context == exposureTargetOffsetContext) {
     float newExposureTargetOffset = [change[NSKeyValueChangeNewKey] floatValue];
-    float absExposureTargetOffset = MIN(fabsf(newExposureTargetOffset), 2.0);
+    float absExposureTargetOffset = fabsf(newExposureTargetOffset);
 
     if (!self.captureDevice) return;
 
@@ -162,6 +162,9 @@ NSString *const errorMethod = @"error";
                    ? self.captureDevice.activeFormat.minISO
                    : newISO;
 
+      if (currentISO == newISO) {
+        return;
+      };
       NSLog(@"exposureTargetOffset=%f, ISO=%f", newExposureTargetOffset, newISO);
       NSError *error = nil;
       if ([self.captureDevice lockForConfiguration:&error]) {

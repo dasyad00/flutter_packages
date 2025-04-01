@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: hix,lightdrop_common,lightdrop_file_manager,lightdrop_tracking,livedrop_common
+dependency_overrides:
+  camera_platform_interface:
+    path: ../camera_platform_interface
