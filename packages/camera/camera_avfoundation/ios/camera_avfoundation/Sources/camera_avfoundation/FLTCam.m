@@ -332,10 +332,6 @@ static void selectBestFormatForRequestedFrameRate(
   }
 
   [self updateOrientation];
-  [self addObserver:self
-         forKeyPath:@"captureDevice.exposureTargetOffset"
-            options:NSKeyValueObservingOptionNew
-            context:exposureTargetOffsetContext];
 
   return self;
 }
@@ -392,6 +388,10 @@ static void selectBestFormatForRequestedFrameRate(
 }
 
 - (void)start {
+  [self addObserver:self
+         forKeyPath:@"captureDevice.exposureTargetOffset"
+            options:NSKeyValueObservingOptionNew
+            context:exposureTargetOffsetContext];
   [_videoCaptureSession startRunning];
   [_audioCaptureSession startRunning];
 }
@@ -399,6 +399,9 @@ static void selectBestFormatForRequestedFrameRate(
 - (void)stop {
   [_videoCaptureSession stopRunning];
   [_audioCaptureSession stopRunning];
+  [self removeObserver:self
+            forKeyPath:@"captureDevice.exposureTargetOffset"
+               context:exposureTargetOffsetContext];
 }
 
 - (void)setVideoFormat:(OSType)videoFormat {
