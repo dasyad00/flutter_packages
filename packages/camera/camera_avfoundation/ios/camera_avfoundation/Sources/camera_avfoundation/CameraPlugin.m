@@ -385,14 +385,14 @@ static Float64 exposureDurationScale = 1000000000;
 - (void)getMinExposureISO:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
-    completion(@(weakSelf.camera.captureDevice.activeFormat.minISO), nil);
+    completion(@(weakSelf.camera.captureDevice.device.activeFormat.minISO), nil);
   });
 }
 
 - (void)getMaxExposureISO:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
-    completion(@(weakSelf.camera.captureDevice.activeFormat.maxISO), nil);
+    completion(@(weakSelf.camera.captureDevice.device.activeFormat.maxISO), nil);
   });
 }
 
@@ -406,7 +406,7 @@ static Float64 exposureDurationScale = 1000000000;
 -(void)getMinExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
-    Float64 minExposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.activeFormat.minExposureDuration);
+    Float64 minExposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.device.activeFormat.minExposureDuration);
     completion(@(exposureDurationScale * minExposureDuration), nil);
   });
 }
@@ -414,7 +414,7 @@ static Float64 exposureDurationScale = 1000000000;
 -(void)getMaxExposureDuration:(void (^)(NSNumber * _Nullable, FlutterError * _Nullable))completion {
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.captureSessionQueue, ^{
-    Float64 maxExposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.activeFormat.maxExposureDuration);
+    Float64 maxExposureDuration = CMTimeGetSeconds(weakSelf.camera.captureDevice.device.activeFormat.maxExposureDuration);
     completion(@(exposureDurationScale * maxExposureDuration), nil);
   });
 }

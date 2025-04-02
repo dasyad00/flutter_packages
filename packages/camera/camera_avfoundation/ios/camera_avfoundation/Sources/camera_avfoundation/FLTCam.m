@@ -135,7 +135,7 @@ NSString *const errorMethod = @"error";
     float newExposureTargetOffset = [change[NSKeyValueChangeNewKey] floatValue];
     float absExposureTargetOffset = fabsf(newExposureTargetOffset);
 
-    if (!self.captureDevice) return;
+    if (!self.captureDevice.device) return;
 
     CGFloat currentISO = self.captureDevice.ISO;
     CGFloat biasISO = 0;
@@ -155,11 +155,11 @@ NSString *const errorMethod = @"error";
     if (biasISO) {
       // Normalize ISO level for the current device
       CGFloat newISO = currentISO + biasISO;
-      newISO = newISO > self.captureDevice.activeFormat.maxISO
-                   ? self.captureDevice.activeFormat.maxISO
+      newISO = newISO > self.captureDevice.device.activeFormat.maxISO
+                   ? self.captureDevice.device.activeFormat.maxISO
                    : newISO;
-      newISO = newISO < self.captureDevice.activeFormat.minISO
-                   ? self.captureDevice.activeFormat.minISO
+      newISO = newISO < self.captureDevice.device.activeFormat.minISO
+                   ? self.captureDevice.device.activeFormat.minISO
                    : newISO;
 
       if (currentISO == newISO) {
@@ -168,7 +168,7 @@ NSString *const errorMethod = @"error";
       NSLog(@"exposureTargetOffset=%f, ISO=%f", newExposureTargetOffset, newISO);
       NSError *error = nil;
       if ([self.captureDevice lockForConfiguration:&error]) {
-        [self.captureDevice setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent
+        [self.captureDevice.device setExposureModeCustomWithDuration:AVCaptureExposureDurationCurrent
                                                           ISO:newISO
                                             completionHandler:^(CMTime syncTime){
                                             }];
@@ -1242,7 +1242,7 @@ static void selectBestFormatForRequestedFrameRate(
     CMTime durationTime = (duration > 0) ? CMTimeMake(duration, 1000000000) : AVCaptureExposureDurationCurrent;
     iso = (iso > 0) ? iso : AVCaptureISOCurrent;
   [_captureDevice lockForConfiguration:nil];
-  [_captureDevice setExposureModeCustomWithDuration:durationTime
+  [_captureDevice.device setExposureModeCustomWithDuration:durationTime
                                                 ISO:iso
                                   completionHandler:nil];
   [_captureDevice unlockForConfiguration];
