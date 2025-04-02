@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:camera_platform_interface/camera_platform_interface.dart';
@@ -270,6 +271,7 @@ class AVFoundationCamera extends CameraPlatform {
   void _startStreamListener() {
     const EventChannel cameraEventChannel =
         EventChannel('plugins.flutter.io/camera_avfoundation/imageStream');
+    sleep(const Duration(milliseconds: 50));
     _platformImageStreamSubscription =
         cameraEventChannel.receiveBroadcastStream().listen((dynamic imageData) {
       try {
