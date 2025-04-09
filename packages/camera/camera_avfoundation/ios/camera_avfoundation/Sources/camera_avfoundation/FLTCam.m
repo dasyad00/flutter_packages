@@ -388,8 +388,8 @@ static void selectBestFormatForRequestedFrameRate(
 }
 
 - (void)start {
-  [self addObserver:self
-         forKeyPath:@"captureDevice.exposureTargetOffset"
+    [self addObserver:self
+         forKeyPath:@"captureDevice.device.exposureTargetOffset"
             options:NSKeyValueObservingOptionNew
             context:exposureTargetOffsetContext];
   [_videoCaptureSession startRunning];
@@ -400,7 +400,7 @@ static void selectBestFormatForRequestedFrameRate(
   [_videoCaptureSession stopRunning];
   [_audioCaptureSession stopRunning];
   [self removeObserver:self
-            forKeyPath:@"captureDevice.exposureTargetOffset"
+            forKeyPath:@"captureDevice.device.exposureTargetOffset"
                context:exposureTargetOffsetContext];
 }
 
