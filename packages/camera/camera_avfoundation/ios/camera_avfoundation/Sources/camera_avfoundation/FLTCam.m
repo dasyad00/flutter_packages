@@ -133,21 +133,17 @@ NSString *const errorMethod = @"error";
                        context:(void *)context {
   if (context == exposureTargetOffsetContext) {
     float newExposureTargetOffset = [change[NSKeyValueChangeNewKey] floatValue];
-    float absExposureTargetOffset = fabsf(newExposureTargetOffset);
 
     if (!self.captureDevice.device) return;
 
     CGFloat currentISO = self.captureDevice.ISO;
     CGFloat biasISO = 0;
     CGFloat limit = 0.05;
-    CGFloat isoChangeStep = currentISO * absExposureTargetOffset;
-
-    if (newExposureTargetOffset > limit) {
-      // decrease ISO
-      biasISO -= isoChangeStep;
-    } else if (newExposureTargetOffset < -limit) {
-      // increase ISO
-      biasISO += isoChangeStep;
+    CGFloat isoChange = currentISO * newExposureTargetOffset;
+      
+    if (newExposureTargetOffset > limit || newExposureTargetOffset < -limit) {
+      // update ISO
+      biasISO -= isoChange;
     } else {
       return;
     }
