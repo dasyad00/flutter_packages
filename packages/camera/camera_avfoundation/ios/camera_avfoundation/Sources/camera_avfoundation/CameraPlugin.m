@@ -144,6 +144,9 @@ static Float64 exposureDurationScale = 1000000000;
     if (@available(iOS 13.0, *)) {
       [discoveryDevices addObject:AVCaptureDeviceTypeBuiltInUltraWideCamera];
     }
+    if (@available(iOS 17.0, *)) {
+      [discoveryDevices addObject:AVCaptureDeviceTypeExternal];
+    }
     NSArray<NSObject<FLTCaptureDevice> *> *devices =
         [self.deviceDiscoverer discoverySessionWithDeviceTypes:discoveryDevices
                                                      mediaType:AVMediaTypeVideo

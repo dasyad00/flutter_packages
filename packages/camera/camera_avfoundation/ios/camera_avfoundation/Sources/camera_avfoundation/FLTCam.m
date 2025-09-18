@@ -1238,9 +1238,11 @@ static void selectBestFormatForRequestedFrameRate(
     CMTime durationTime = (duration > 0) ? CMTimeMake(duration, 1000000000) : AVCaptureExposureDurationCurrent;
     iso = (iso > 0) ? iso : AVCaptureISOCurrent;
   [_captureDevice lockForConfiguration:nil];
-  [_captureDevice.device setExposureModeCustomWithDuration:durationTime
-                                                ISO:iso
-                                  completionHandler:nil];
+    if ([_captureDevice.device isExposureModeSupported:AVCaptureExposureModeCustom]) {
+        [_captureDevice.device setExposureModeCustomWithDuration:durationTime
+                                                      ISO:iso
+                                        completionHandler:nil];
+    }
   [_captureDevice unlockForConfiguration];
 }
 
